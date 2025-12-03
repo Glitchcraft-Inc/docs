@@ -1,0 +1,96 @@
+---
+title: "Bucket Upload Integration"
+description: "Upload your game data files to GameRamp using cloud storage bucket"
+---
+
+## Overview
+
+GameRamp provides a secure Google Cloud Storage bucket where you can upload your game data files for processing. This integration works from any platform including AWS, Azure, GCP, or on-premises systems.
+
+**Bucket Name:** `gc-third-party-uploads`
+
+## Getting Started
+
+Contact the GameRamp team at [connect@gameramp.com](mailto:connect@gameramp.com) to receive your service account credentials with upload access to your designated folder.
+
+## Upload Approaches
+
+### Approach 1: Using Google Cloud CLI (Recommended)
+
+**Best for:** Regular uploads, automated scripts, GCP environments
+
+```bash
+# Install Google Cloud SDK
+# macOS: brew install google-cloud-sdk
+# Ubuntu: sudo apt-get install google-cloud-sdk
+
+# Authenticate with your service account key
+gcloud auth activate-service-account --key-file=path/to/your-service-account-key.json
+
+# Upload files
+gsutil cp your-data-file.csv gs://gc-third-party-uploads/your-client-folder/
+gsutil cp *.csv gs://gc-third-party-uploads/your-client-folder/
+```
+
+### Approach 2: AWS Native Approach
+
+**Best for:** AWS environments, existing AWS CLI workflows
+
+```bash
+# Install Google Cloud SDK on AWS EC2 or local AWS environment
+curl https://sdk.cloud.google.com | bash
+exec -l $SHELL
+
+# Authenticate with provided service account key
+gcloud auth activate-service-account --key-file=path/to/your-service-account-key.json
+
+# Upload from AWS environment
+gsutil cp your-data-file.csv gs://gc-third-party-uploads/your-client-folder/
+
+# Or sync entire directories
+gsutil -m rsync -r ./data/ gs://gc-third-party-uploads/your-client-folder/
+```
+
+### Approach 3: Programmatic Integration
+
+**Best for:** Application integration, automated data pipelines
+
+**Python Example:**
+```python
+from google.cloud import storage
+import os
+
+# Set credentials
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'path/to/your-key.json'
+
+# Upload function
+client = storage.Client()
+bucket = client.bucket('gc-third-party-uploads')
+
+def upload_file(source_path, destination_name):
+    blob = bucket.blob(f"your-client-folder/{destination_name}")
+    blob.upload_from_filename(source_path)
+    print(f"Uploaded {source_path} to {destination_name}")
+
+upload_file('player_events.csv', 'events_2024_12_03.csv')
+```
+
+
+
+## Supported File Formats
+
+- CSV files
+- Parquet files  
+- JSON files (newline-delimited)
+
+## Next Steps
+
+After uploading your files:
+
+1. GameRamp will automatically process your uploaded data
+2. Contact GameRamp support to confirm your integration is active
+3. Access your processed insights through the GameRamp dashboard
+
+## Support
+
+For assistance with GCS upload integration, contact GameRamp support at [connect@gameramp.com](mailto:connect@gameramp.com).

@@ -86,6 +86,8 @@
             "group": "Data Export",
             "pages": [
               "integrations/bigquery"
+              "integrations/bigquery",
+              "integrations/gcs-upload"
             ]
           }
         ]
